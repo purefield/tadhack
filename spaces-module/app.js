@@ -125,7 +125,9 @@ socket.on('MESSAGE_SENT', function(msg) {
         producer.send({
             topic: topic,
             messages: [{
-                key: 'spaces-message', value: JSON.stringify(msg.content)
+                key: 'spaces-message', value: JSON.stringify({
+                    message: msg.content
+                    sender: msg.sender })
             }]
         });
     } else {
