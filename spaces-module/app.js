@@ -1,5 +1,7 @@
-const token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkX3NpZyI6Ii1TYXc4cWRYdTVxS01vckFBeVVRQ0FaV3ZMZEJ2UjZtR1FQZUF5Z0pBUlEiLCJwcm9kdWN0X3R5cGUiOiJhY2NvdW50cyIsImxhc3R1cGRhdGV0aW1lIjoiMjAyMS0xMi0xMVQxNjo0MDozNi4xMDMiLCJpc3MiOiJhdmF5YWNsb3VkLmNvbSIsInB1YmxpY2tleWlkIjoiYWd4emZtOXVaWE51WVRJd01UUnlHZ3NTRFVkS2QzUlFkV0pzYVdOTFpYa1lnSUR3ZzdLRnFRa00iLCJleHAiOjE2NDE4MzQ2MjQsInVzZXJfaWQiOiJhZ3h6Zm05dVpYTnVZVEl3TVRSeUVRc1NCRlZ6WlhJWWdJRHdfY2lNb3drTSIsInZlciI6IjIuMCJ9.Qqk-pZWXEXK-7DMLUjU6vI0_VkZFpdi4OQMvbMOq6KgnZ7ZpkJPYxC2GmKpE6hCWCKToxCqeZgv-vsg687KKrxI7xNvxcsQRZHdQnyGHaGOW71hh9tIxChXBYpNqXw7DxfwAvBhX50HseWGltV1f_W-lQ-UGUEWGlK6kMM94c6d9eiFvMEgGFn3Pb6SPCwIjL7M4gBoz57HwY2TDiqXSYTq5uRs3dQQu2JucI09t7jHweROfah25cxqoVqKT0sCJQcgjbt1ZMTLYTLbrZvExVpXxXSmH0BKNBs21Baj5dAtv3AbqkG05pi1-2YOnnL7kAbn48yCvRTPfKLF_ebYfXQ";
+const token  = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkX3NpZyI6Ii1TYXc4cWRYdTVxS01vckFBeVVRQ0FaV3ZMZEJ2UjZtR1FQZUF5Z0pBUlEiLCJwcm9kdWN0X3R5cGUiOiJhY2NvdW50cyIsImxhc3R1cGRhdGV0aW1lIjoiMjAyMS0xMi0xMVQxNjo0MDozNi4xMDMiLCJpc3MiOiJhdmF5YWNsb3VkLmNvbSIsInB1YmxpY2tleWlkIjoiYWd4emZtOXVaWE51WVRJd01UUnlHZ3NTRFVkS2QzUlFkV0pzYVdOTFpYa1lnSUR3ZzdLRnFRa00iLCJleHAiOjE2NDE4MzQ2MjQsInVzZXJfaWQiOiJhZ3h6Zm05dVpYTnVZVEl3TVRSeUVRc1NCRlZ6WlhJWWdJRHdfY2lNb3drTSIsInZlciI6IjIuMCJ9.Qqk-pZWXEXK-7DMLUjU6vI0_VkZFpdi4OQMvbMOq6KgnZ7ZpkJPYxC2GmKpE6hCWCKToxCqeZgv-vsg687KKrxI7xNvxcsQRZHdQnyGHaGOW71hh9tIxChXBYpNqXw7DxfwAvBhX50HseWGltV1f_W-lQ-UGUEWGlK6kMM94c6d9eiFvMEgGFn3Pb6SPCwIjL7M4gBoz57HwY2TDiqXSYTq5uRs3dQQu2JucI09t7jHweROfah25cxqoVqKT0sCJQcgjbt1ZMTLYTLbrZvExVpXxXSmH0BKNBs21Baj5dAtv3AbqkG05pi1-2YOnnL7kAbn48yCvRTPfKLF_ebYfXQ";
 const myRoom = "61b4f6d183404d2d08053a4e";
+const topic  = 'spaces-' + myRoom;
+const kafkaBootstrapServers = 'tadhack:9092';
 
 const io = require('socket.io-client')
 const query = "token=" + token + "=jwt";
@@ -11,6 +13,7 @@ const socket = io('https://spacesapis-socket.avayacloud.com/chat', {
       secure: true,
       port: "443"
 });
+const { Kafka } = require('kafkajs');
 const readline = require('readline');
 var rl = readline.createInterface({
   input: process.stdin,
@@ -20,7 +23,14 @@ var rl = readline.createInterface({
 rl.on('line', function(line){
     console.log(line);
     send(myRoom, line)
-})
+});
+
+const kafka = new Kafka ({
+    clientId: 'spaces',
+    brokers: [kafkaBootstrapServers]
+});
+const producer = kafka.producer();
+producer.connect();
 
 function send(room, msg) {
     // topicId = space
@@ -32,7 +42,12 @@ function send(room, msg) {
         topicId: room,
         loopbackMetadata: 'meta data'
     };
-
+    producer.send({
+        topic: topic,
+        messages: [{
+            key: 'spaces-message', value: JSON.stringify(msg)
+        }]
+    });
     console.log(JSON.stringify(payload1));
     socket.emit('SEND_MESSAGE', payload1);
 }   
