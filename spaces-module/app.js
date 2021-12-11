@@ -126,7 +126,7 @@ socket.on('MESSAGE_SENT', function(msg) {
             topic: topic,
             messages: [{
                 key: 'spaces-message', value: JSON.stringify({
-                    message: msg.content
+                    message: msg.content,
                     sender: msg.sender })
             }]
         });
