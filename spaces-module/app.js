@@ -42,12 +42,6 @@ function send(room, msg) {
         topicId: room,
         loopbackMetadata: 'meta data'
     };
-    producer.send({
-        topic: topic,
-        messages: [{
-            key: 'spaces-message', value: JSON.stringify(msg)
-        }]
-    });
     console.log(JSON.stringify(payload1));
     socket.emit('SEND_MESSAGE', payload1);
 }   
@@ -113,6 +107,12 @@ socket.on('MESSAGE_SENT', function(msg) {
     var category = msg.category;
     if (category == "chat") {
         console.log("Message = " + msg.content.bodyText);
+        producer.send({
+            topic: topic,
+            messages: [{
+                key: 'spaces-message', value: JSON.stringify(msg.content)
+            }]
+        });
     } else {
         console.log("Category = " + category);
     }
