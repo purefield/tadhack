@@ -43,11 +43,11 @@ consumer.subscribe({
 });
 consumer.run({
     eachMessage: function ({ topic, partition, message }){
-        console.log(JSON.stringify(message));
-        // json = JSON.parse(message.value);
-        // if (json.method != 'spaces'){
-        //     send(myRoom, json.sender + '('+ json.method +')' + ' wrote: ' + json.msg);
-        // }
+        console.log(JSON.stringify(message.value.toString()));
+        json = JSON.parse(message.value.toString());
+        if (json.method != 'spaces'){
+            send(myRoom, json.sender + '('+ json.method +')' + ' wrote: ' + json.msg);
+        }
     }
 });
 
