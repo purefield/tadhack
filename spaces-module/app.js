@@ -124,17 +124,17 @@ socket.on('MESSAGE_SENT', function(msg) {
     console.log('MESSAGE_SENT');
     var category = msg.category;
     if (category == "chat") {
-        console.log("Message = " + msg.content.bodyText);
+        console.log("Message = " + JSON.stringify(msg.content));
         if (msg.sender.username != 'Anonymous'){
             producer.send({
                 topic: topic,
                 messages: [{
                     key: 'spaces-message', 
                     value: JSON.stringify({
+                        // time: msg.startTime.toString(),
                         sender: msg.sender.displayname,
                         msg: msg.content.bodyText,
-                        method: 'spaces',
-                        time: msg.startTime.toString()
+                        method: 'spaces'
                     })
                 }]
             });
