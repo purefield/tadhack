@@ -4,8 +4,10 @@ const clientId = topic + '-sms';
 const kafkaBootstrapServers = 'tadhack-kafka-bootstrap:9092';
 const request = require('request-promise');
 
+var from = '+16062528425';
+var to = '+19137084108';
 async function send(msg) {
-    var url = "https://api-us.cpaas.avayacloud.com/v2/Accounts/AC400001a0ee01c9b648924b68b613b428/SMS/Messages.json?To=+19137084108&From=+16062528425&Body="+encodeURI(msg);
+    var url = "https://api-us.cpaas.avayacloud.com/v2/Accounts/AC400001a0ee01c9b648924b68b613b428/SMS/Messages.json?To="+encodeURI(to)+"&From="+encodeURI(from)+"&Body="+encodeURI(msg);
     var response = await request.post({
         url: url, 
         auth: {
@@ -50,7 +52,16 @@ consumer.run({
         try {
             json = JSON.parse(message.value.toString());
             if (json && json.method != 'sms'){
-                send(json.sender + '('+ json.method +')' + ' wrote: ' + json.msg);
+                msg = json.msg;
+                const regex = /\#invite\s(?<name>[^\@]*)\@sms\:(?<number>\d*)/;
+                const found = msg.match(regex);
+                if (found.groups){
+                    to='+1'+found.groups.number;
+                    console.log('Setting number to: ' + to);
+                }
+                else {
+                    send(json.sender + '('+ json.method +')' + ' wrote: ' + json.msg);
+                }
             }
         }
         catch (e){
