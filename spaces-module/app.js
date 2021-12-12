@@ -135,7 +135,7 @@ socket.on('MESSAGE_SENT', function(msg) {
                         msg: msg.content.bodyText,
                         method: 'spaces',
                         time: msg.startTime
-                    )
+                    })
                 }]
             });
         }
