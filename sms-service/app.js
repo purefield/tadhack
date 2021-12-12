@@ -36,7 +36,7 @@ const kafka = new Kafka ({
     brokers: [kafkaBootstrapServers]
 });
 const consumer = kafka.consumer({
-    groupId: 'group'
+    groupId: 'group-sms'
 });
 consumer.connect();
 consumer.subscribe({
