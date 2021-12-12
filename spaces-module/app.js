@@ -43,7 +43,10 @@ consumer.subscribe({
 });
 consumer.run({
     eachMessage: function ({ topic, partition, message }){
-        send(myRoom, message.value.toString());
+        json = JSON.parse(message.value);
+        if (json.method != 'spaces'){
+            send(myRoom, json.sender + '('+ json.method +')' + ' wrote: ' + json.msg);
+        }
     }
 });
 
@@ -127,8 +130,11 @@ socket.on('MESSAGE_SENT', function(msg) {
                 topic: topic,
                 messages: [{
                     key: 'spaces-message', 
-                    value: JSON.stringify(
-                        msg.sender.displayname + ' wrote: ' + msg.content.bodyText
+                    value: JSON.stringify({
+                        sender: msg.sender.displayname,
+                        msg: msg.content.bodyText,
+                        method: 'spaces',
+                        time: msg.startTime
                     )
                 }]
             });
