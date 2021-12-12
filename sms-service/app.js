@@ -46,7 +46,7 @@ consumer.subscribe({
 });
 consumer.run({
     eachMessage: function ({ topic, partition, message }){
-        // console.log(JSON.stringify(message.value.toString()));
+        console.log(JSON.stringify(message.value.toString()));
         try {
             json = JSON.parse(message.value.toString());
             if (json && json.method != 'sms'){
