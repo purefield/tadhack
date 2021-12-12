@@ -21,6 +21,7 @@ async function send(number, msg) {
         }}, function(e , r , body) {});
     var json = JSON.parse(response);
     console.log(response);
+    await sleep(1000);
 }
 const readline = require('readline');
 var rl = readline.createInterface({
