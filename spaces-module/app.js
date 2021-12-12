@@ -3,6 +3,26 @@ const myRoom = "61b4f6d183404d2d08053a4e";
 const topic  = 'spaces-' + myRoom;
 const clientId = topic + '-server';
 const kafkaBootstrapServers = 'tadhack-kafka-bootstrap:9092';
+const request = require('request-promise');
+
+async function getAuthToken() 
+{
+    var authData = {
+        "displayname": "Bridge",
+        "username": "Anonymous"
+    };
+    var url = "https://spacesapis.avayacloud.com/api/anonymous/auth";
+    var response = await request.post({
+        url: url, 
+        body: JSON.stringify(authData), 
+        headers : {
+            'Accept' : 'application/json', 
+            "Content-type": 'application/json'
+        }}, function(e , r , body) {});
+    var json = JSON.parse(response);
+    token = json.token;
+}
+getAuthToken();
 
 const io = require('socket.io-client')
 const query = "token=" + token + "=jwt";
