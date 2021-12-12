@@ -7,7 +7,8 @@ const { htmlToText } = require('html-to-text');
 
 var from = '+16062528425';
 var to = [];
-async function send(number, msg) {
+async function send(index, number, msg) {
+    await sleep(1500 * index);
     var url = "https://api-us.cpaas.avayacloud.com/v2/Accounts/AC400001a0ee01c9b648924b68b613b428/SMS/Messages.json?To="+encodeURI(number)+"&From="+encodeURI(from)+"&Body="+encodeURI(msg);
     var response = await request.post({
         url: url, 
@@ -21,7 +22,6 @@ async function send(number, msg) {
         }}, function(e , r , body) {});
     var json = JSON.parse(response);
     console.log(response);
-    await sleep(1500);
 }
 const readline = require('readline');
 var rl = readline.createInterface({
@@ -64,7 +64,7 @@ consumer.run({
                 }
                 else {
                     to.forEach(function(number, index, array){
-                        await send(number, json.sender + '('+ json.method +')' + ' wrote: ' + htmlToText(json.msg));
+                        send(index, number, json.sender + '('+ json.method +')' + ' wrote: ' + htmlToText(json.msg));
                     });
                 }
             }
