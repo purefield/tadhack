@@ -3,6 +3,7 @@ const topic  = 'spaces-' + myRoom;
 const clientId = topic + '-sms';
 const kafkaBootstrapServers = 'tadhack-kafka-bootstrap:9092';
 const request = require('request-promise');
+const { htmlToText } = require('html-to-text');
 
 var from = '+16062528425';
 var to = '+19137084108';
@@ -60,7 +61,7 @@ consumer.run({
                     console.log('Setting number to: ' + to);
                 }
                 else {
-                    send(json.sender + '('+ json.method +')' + ' wrote: ' + json.msg);
+                    send(json.sender + '('+ json.method +')' + ' wrote: ' + htmlToText(json.msg));
                 }
             }
         }
