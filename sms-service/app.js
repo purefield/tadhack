@@ -21,6 +21,7 @@ async function send(number, msg) {
         }}, function(e , r , body) {});
     var json = JSON.parse(response);
     console.log(response);
+    await sleep(1500);
 }
 const readline = require('readline');
 var rl = readline.createInterface({
@@ -63,8 +64,7 @@ consumer.run({
                 }
                 else {
                     to.forEach(function(number, index, array){
-                        send(number, json.sender + '('+ json.method +')' + ' wrote: ' + htmlToText(json.msg));
-                        await sleep(1500);
+                        await send(number, json.sender + '('+ json.method +')' + ' wrote: ' + htmlToText(json.msg));
                     });
                 }
             }
