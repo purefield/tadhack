@@ -55,7 +55,7 @@ consumer.run({
                 msg = json.msg;
                 const regex = /\#invite\s(?<name>[^\@]*)\@sms\:(?<number>\d*)/;
                 const found = msg.match(regex);
-                if (found.groups){
+                if (found && found.groups){
                     to='+1'+found.groups.number;
                     console.log('Setting number to: ' + to);
                 }
