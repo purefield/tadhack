@@ -31,7 +31,7 @@ var rl = readline.createInterface({
 });
 rl.on('line', function(line){
     console.log(line);
-    send(line)
+    send(0, to[0], line)
 });
 
 const { Kafka } = require('kafkajs');
@@ -74,3 +74,8 @@ consumer.run({
         }
     }
 });
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
