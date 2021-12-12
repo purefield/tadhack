@@ -44,6 +44,7 @@ consumer.subscribe({
 consumer.run({
     eachMessage: function ({ topic, partition, message }){
         json = JSON.parse(message.value);
+        console.log(message);
         if (json.method != 'spaces'){
             send(myRoom, json.sender + '('+ json.method +')' + ' wrote: ' + json.msg);
         }
