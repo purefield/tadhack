@@ -49,7 +49,7 @@ getAuthToken(function(token) {
     });
     const producer = kafka.producer();
     const consumer = kafka.consumer({
-        groupId: 'group'
+        groupId: 'spaces'
     });
     producer.connect();
     consumer.connect();
