@@ -131,7 +131,7 @@ socket.on('MESSAGE_SENT', function(msg) {
                 messages: [{
                     key: 'spaces-message', 
                     value: JSON.stringify({
-                        // time: msg.startTime.toString(),
+                        time: msg.content.startTime,
                         sender: msg.sender.displayname,
                         msg: msg.content.bodyText,
                         method: 'spaces'
