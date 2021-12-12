@@ -6,9 +6,9 @@ const request = require('request-promise');
 const { htmlToText } = require('html-to-text');
 
 var from = '+16062528425';
-var to = '+19137084108';
-async function send(msg) {
-    var url = "https://api-us.cpaas.avayacloud.com/v2/Accounts/AC400001a0ee01c9b648924b68b613b428/SMS/Messages.json?To="+encodeURI(to)+"&From="+encodeURI(from)+"&Body="+encodeURI(msg);
+var to = [];
+async function send(number, msg) {
+    var url = "https://api-us.cpaas.avayacloud.com/v2/Accounts/AC400001a0ee01c9b648924b68b613b428/SMS/Messages.json?To="+encodeURI(number)+"&From="+encodeURI(from)+"&Body="+encodeURI(msg);
     var response = await request.post({
         url: url, 
         auth: {
@@ -57,11 +57,14 @@ consumer.run({
                 const regex = /\#invite\s(?<name>[^\@]*)\@sms\:(?<number>\d*)/;
                 const found = msg.match(regex);
                 if (found && found.groups){
-                    to='+1'+found.groups.number;
-                    console.log('Setting number to: ' + to);
+                    var number = found.groups.number;
+                    to.push('+1'+number);
+                    console.log('Adding number: ' + number);
                 }
                 else {
-                    send(json.sender + '('+ json.method +')' + ' wrote: ' + htmlToText(json.msg));
+                    to.forEach(function(number, index, array){
+                        send(number, json.sender + '('+ json.method +')' + ' wrote: ' + htmlToText(json.msg));
+                    });
                 }
             }
         }
